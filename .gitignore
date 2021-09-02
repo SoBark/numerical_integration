@@ -1,0 +1,10 @@
+﻿################################################################################
+# Данный GITIGNORE-файл был автоматически создан Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/numerical_integration/v16
+/Debug
+/numerical_integration/Debug
+/.vs
+/x64/Debug
+/numerical_integration/x64/Debug
