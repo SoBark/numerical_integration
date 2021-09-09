@@ -1,83 +1,83 @@
-#include "pch.h"
+п»ї#include "pch.h"
 #include "Integration_Scheme_Interval.h"
 #include "iostream"
 namespace Com_Methods
 {
-	//конструктор: на вход подаётся тип квадратурной формулы
+	//РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ: РЅР° РІС…РѕРґ РїРѕРґР°С‘С‚СЃСЏ С‚РёРї РєРІР°РґСЂР°С‚СѓСЂРЅРѕР№ С„РѕСЂРјСѓР»С‹
 	Integration_Scheme_Interval::Integration_Scheme_Interval(Integration_Scheme_Type Type)
 	{
-		//заполнение массивов точек и весов интегрирования
+		//Р·Р°РїРѕР»РЅРµРЅРёРµ РјР°СЃСЃРёРІРѕРІ С‚РѕС‡РµРє Рё РІРµСЃРѕРІ РёРЅС‚РµРіСЂРёСЂРѕРІР°РЅРёСЏ
 		switch (Type)
 		{
-			//схема метода Гаусс-1
-			case Gauss1:
-			{
-				Weight = { 2 };
-				Points = {Point(0, 0, 0) };
-				break;
-			}
-			case Gauss2:
-			{
-				Weight = { 1,1 };
-				Points = { Point(-1.0 / sqrt(3.0),0,0), Point(1.0 / sqrt(3.0),0,0) };
-				break;
-			}
-			case Gauss3:
-			{
-				Weight = { 5.0/9.0, 8.0/9.0, 5.0/9.0 };
-				Points = { Point(-sqrt(3.0 / 5.0),0,0),
-						   Point(0,0,0),
-						   Point(sqrt(3.0 / 5.0),0,0) };
-				break;
-			}
-			case Simpson:
-			{
-				Weight = { 1.0/3.0, 4.0/3.0, 1.0/3.0 };
-				Points = { Point(-1.0, 0, 0),
-						   Point(0, 0, 0),
-						   Point(1.0, 0, 0), };
-				break;
-			}
+			//СЃС…РµРјР° РјРµС‚РѕРґР° Р“Р°СѓСЃСЃ-1
+		case Gauss1:
+		{
+			Weight = { 2 };
+			Points = { Point(0, 0, 0) };
+			break;
+		}
+		case Gauss2:
+		{
+			Weight = { 1,1 };
+			Points = { Point(-1.0 / sqrt(3.0),0,0), Point(1.0 / sqrt(3.0),0,0) };
+			break;
+		}
+		case Gauss3:
+		{
+			Weight = { 5.0 / 9.0, 8.0 / 9.0, 5.0 / 9.0 };
+			Points = { Point(-sqrt(3.0 / 5.0),0,0),
+					   Point(0,0,0),
+					   Point(sqrt(3.0 / 5.0),0,0) };
+			break;
+		}
+		case Simpson:
+		{
+			Weight = { 1.0 / 3.0, 4.0 / 3.0, 1.0 / 3.0 };
+			Points = { Point(-1.0, 0, 0),
+					   Point(0, 0, 0),
+					   Point(1.0, 0, 0), };
+			break;
+		}
 		}
 	}
 
-	//метод для вычисления определённого интеграла: 
-	//Begin и End - начало и конец отрезка 
-	//Num_Segments - число сегментов
-	//Func - подынтегральная функция
-	double Integration_Scheme_Interval:: Calculate_Integral(
-								         const Point &Begin,
-								         const Point &End,
-								         int Number_Segments,
-								         const std::function<double(const Point &P)>&Func) const
+	//РјРµС‚РѕРґ РґР»СЏ РІС‹С‡РёСЃР»РµРЅРёСЏ РѕРїСЂРµРґРµР»С‘РЅРЅРѕРіРѕ РёРЅС‚РµРіСЂР°Р»Р°: 
+	//Begin Рё End - РЅР°С‡Р°Р»Рѕ Рё РєРѕРЅРµС† РѕС‚СЂРµР·РєР° 
+	//Num_Segments - С‡РёСЃР»Рѕ СЃРµРіРјРµРЅС‚РѕРІ
+	//Func - РїРѕРґС‹РЅС‚РµРіСЂР°Р»СЊРЅР°СЏ С„СѓРЅРєС†РёСЏ
+	double Integration_Scheme_Interval::Calculate_Integral(
+		const Point& Begin,
+		const Point& End,
+		int Number_Segments,
+		const std::function<double(const Point& P)>& Func) const
 	{
-		//результат (квадратурная сумма)
+		//СЂРµР·СѓР»СЊС‚Р°С‚ (РєРІР°РґСЂР°С‚СѓСЂРЅР°СЏ СЃСѓРјРјР°)
 		double Result = 0.0;
-		//начальная точка сегмента
+		//РЅР°С‡Р°Р»СЊРЅР°СЏ С‚РѕС‡РєР° СЃРµРіРјРµРЅС‚Р°
 		double X0;
-		//шаг на отрезке
+		//С€Р°Рі РЅР° РѕС‚СЂРµР·РєРµ
 		double h = (End.x() - Begin.x()) / Number_Segments;
-		//сумма по всем сегментам разбиения
+		//СЃСѓРјРјР° РїРѕ РІСЃРµРј СЃРµРіРјРµРЅС‚Р°Рј СЂР°Р·Р±РёРµРЅРёСЏ
 		for (int i = 0; i < Number_Segments; i++)
 		{
-			//начальная точка сегмента
+			//РЅР°С‡Р°Р»СЊРЅР°СЏ С‚РѕС‡РєР° СЃРµРіРјРµРЅС‚Р°
 			X0 = Begin.x() + i * h;
-			//сумма по узлам интегрирования
+			//СЃСѓРјРјР° РїРѕ СѓР·Р»Р°Рј РёРЅС‚РµРіСЂРёСЂРѕРІР°РЅРёСЏ
 			for (int Integ_Point = 0; Integ_Point < Points.size(); Integ_Point++)
 			{
-				//переход с мастер-элемента [-1, 1]
+				//РїРµСЂРµС…РѕРґ СЃ РјР°СЃС‚РµСЂ-СЌР»РµРјРµРЅС‚Р° [-1, 1]
 				auto P = Point(X0 + (1 + Points[Integ_Point].x()) * h / 2.0, 0, 0);
 				Result += Weight[Integ_Point] * Func(P);
 			}
 		}
-		//формируем результат с учётом якобиана на отрезке [-1, 1]
+		//С„РѕСЂРјРёСЂСѓРµРј СЂРµР·СѓР»СЊС‚Р°С‚ СЃ СѓС‡С‘С‚РѕРј СЏРєРѕР±РёР°РЅР° РЅР° РѕС‚СЂРµР·РєРµ [-1, 1]
 		return Result * (h / 2.0);
 	}
 
-	//метод для вычисления определённого интеграла на адаптивной сетке: 
-	//Begin и End - начало и конец отрезка 
-	//Num_Segments - число сегментов
-	//Func - подынтегральная функция
+	//РјРµС‚РѕРґ РґР»СЏ РІС‹С‡РёСЃР»РµРЅРёСЏ РѕРїСЂРµРґРµР»С‘РЅРЅРѕРіРѕ РёРЅС‚РµРіСЂР°Р»Р° РЅР° Р°РґР°РїС‚РёРІРЅРѕР№ СЃРµС‚РєРµ: 
+	//Begin Рё End - РЅР°С‡Р°Р»Рѕ Рё РєРѕРЅРµС† РѕС‚СЂРµР·РєР° 
+	//Num_Segments - С‡РёСЃР»Рѕ СЃРµРіРјРµРЅС‚РѕРІ
+	//Func - РїРѕРґС‹РЅС‚РµРіСЂР°Р»СЊРЅР°СЏ С„СѓРЅРєС†РёСЏ
 	double Integration_Scheme_Interval::Calculate_Integral_Adaptive(
 		const Point& Begin,
 		const Point& End,
@@ -85,11 +85,11 @@ namespace Com_Methods
 		double r,
 		const std::function<double(const Point& P)>& Func) const
 	{
-		//результат (квадратурная сумма)
+		//СЂРµР·СѓР»СЊС‚Р°С‚ (РєРІР°РґСЂР°С‚СѓСЂРЅР°СЏ СЃСѓРјРјР°)
 		double Result = 0.0;
-		//начальная точка сегмента
+		//РЅР°С‡Р°Р»СЊРЅР°СЏ С‚РѕС‡РєР° СЃРµРіРјРµРЅС‚Р°
 		double X01, X02;
-		//поиск шагов, измельчающих сетку к концам отрезка
+		//РїРѕРёСЃРє С€Р°РіРѕРІ, РёР·РјРµР»СЊС‡Р°СЋС‰РёС… СЃРµС‚РєСѓ Рє РєРѕРЅС†Р°Рј РѕС‚СЂРµР·РєР°
 		double power = 1, sum1 = 0, sum2 = 0;
 		for (int i = 0; i < Number_Segments / 2; i++)
 		{
@@ -99,16 +99,16 @@ namespace Com_Methods
 		}
 		double h1 = (End.x() - Begin.x()) / 2.0 / sum1,
 			h2 = (End.x() - Begin.x()) / 2.0 / sum2;
-		//сумма по всем сегментам разбиения
+		//СЃСѓРјРјР° РїРѕ РІСЃРµРј СЃРµРіРјРµРЅС‚Р°Рј СЂР°Р·Р±РёРµРЅРёСЏ
 		power = 1;
 		X01 = Begin.x();
 		X02 = (End.x() - Begin.x()) / 2.0;
 		std::cout << "X01\tX01_end\tX020\tX02_end" << std::endl;
-		std::cout << X01 << "\t" << X01+h1*power << "\t" << X02 << "\t" << X02+h2*(1.0/power) << std::endl;
+		std::cout << X01 << "\t" << X01 + h1 * power << "\t" << X02 << "\t" << X02 + h2 * (1.0 / power) << std::endl;
 
 		for (int Integ_Point = 0; Integ_Point < Points.size(); Integ_Point++)
 		{
-			//переход с мастер-элемента [-1, 1]
+			//РїРµСЂРµС…РѕРґ СЃ РјР°СЃС‚РµСЂ-СЌР»РµРјРµРЅС‚Р° [-1, 1]
 			auto P1 = Point(X01 + (1 + Points[Integ_Point].x()) * h1 * power / 2.0, 0, 0);
 			auto P2 = Point(X02 + (1 + Points[Integ_Point].x()) * h2 * (1.0 / power) / 2.0, 0, 0);
 			Result += Weight[Integ_Point] * Func(P1) * (h1 * power / 2.0);
@@ -116,15 +116,15 @@ namespace Com_Methods
 		}
 		for (int i = 1; i < Number_Segments / 2; i++)
 		{
-			//начальная точка сегмента
+			//РЅР°С‡Р°Р»СЊРЅР°СЏ С‚РѕС‡РєР° СЃРµРіРјРµРЅС‚Р°
 			X01 += h1 * power;
 			X02 += h2 * (1 / power);
 			power *= r;
-			std::cout << X01 << "\t" << X01 + h1 * power << "\t" << X02 << "\t" << X02 + h2 *(1.0/ power) << std::endl;
-			//сумма по узлам интегрирования
+			std::cout << X01 << "\t" << X01 + h1 * power << "\t" << X02 << "\t" << X02 + h2 * (1.0 / power) << std::endl;
+			//СЃСѓРјРјР° РїРѕ СѓР·Р»Р°Рј РёРЅС‚РµРіСЂРёСЂРѕРІР°РЅРёСЏ
 			for (int Integ_Point = 0; Integ_Point < Points.size(); Integ_Point++)
 			{
-				//переход с мастер-элемента [-1, 1]
+				//РїРµСЂРµС…РѕРґ СЃ РјР°СЃС‚РµСЂ-СЌР»РµРјРµРЅС‚Р° [-1, 1]
 				auto P1 = Point(X01 + (1 + Points[Integ_Point].x()) * h1 * power / 2.0, 0, 0);
 				auto P2 = Point(X02 + (1 + Points[Integ_Point].x()) * h2 * (1.0 / power) / 2.0, 0, 0);
 				Result += Weight[Integ_Point] * Func(P1) * (h1 * power / 2.0);
@@ -132,7 +132,7 @@ namespace Com_Methods
 			}
 
 		}
-		//формируем результат с учётом якобиана на отрезке [-1, 1]
+		//С„РѕСЂРјРёСЂСѓРµРј СЂРµР·СѓР»СЊС‚Р°С‚ СЃ СѓС‡С‘С‚РѕРј СЏРєРѕР±РёР°РЅР° РЅР° РѕС‚СЂРµР·РєРµ [-1, 1]
 		return Result;
 	}
 }

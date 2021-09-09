@@ -1,15 +1,15 @@
-#include "pch.h"
+п»ї#include "pch.h"
 #include "Integration_Scheme_Adaptive.h"
 
 namespace Com_Methods
 {
-	//конструктор: на вход подаётся тип квадратурной формулы
+	//РєРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ: РЅР° РІС…РѕРґ РїРѕРґР°С‘С‚СЃСЏ С‚РёРї РєРІР°РґСЂР°С‚СѓСЂРЅРѕР№ С„РѕСЂРјСѓР»С‹
 	Integration_Scheme_Adaptive::Integration_Scheme_Adaptive(Integration_Scheme_Type Type)
 	{
-		//заполнение массивов точек и весов интегрирования
+		//Р·Р°РїРѕР»РЅРµРЅРёРµ РјР°СЃСЃРёРІРѕРІ С‚РѕС‡РµРє Рё РІРµСЃРѕРІ РёРЅС‚РµРіСЂРёСЂРѕРІР°РЅРёСЏ
 		switch (Type)
 		{
-			//схема метода Гаусс-1
+			//СЃС…РµРјР° РјРµС‚РѕРґР° Р“Р°СѓСЃСЃ-1
 		case Gauss1:
 		{
 			Weight = { 2 };
@@ -41,10 +41,10 @@ namespace Com_Methods
 		}
 	}
 
-	//метод для вычисления определённого интеграла на адаптивной сетке: 
-	//Begin и End - начало и конец отрезка 
-	//Num_Segments - число сегментов
-	//Func - подынтегральная функция
+	//РјРµС‚РѕРґ РґР»СЏ РІС‹С‡РёСЃР»РµРЅРёСЏ РѕРїСЂРµРґРµР»С‘РЅРЅРѕРіРѕ РёРЅС‚РµРіСЂР°Р»Р° РЅР° Р°РґР°РїС‚РёРІРЅРѕР№ СЃРµС‚РєРµ: 
+	//Begin Рё End - РЅР°С‡Р°Р»Рѕ Рё РєРѕРЅРµС† РѕС‚СЂРµР·РєР° 
+	//Num_Segments - С‡РёСЃР»Рѕ СЃРµРіРјРµРЅС‚РѕРІ
+	//Func - РїРѕРґС‹РЅС‚РµРіСЂР°Р»СЊРЅР°СЏ С„СѓРЅРєС†РёСЏ
 	double Integration_Scheme_Adaptive::Calculate_Integral(
 		const Point& Begin,
 		const Point& End,
@@ -52,11 +52,11 @@ namespace Com_Methods
 		double r,
 		const std::function<double(const Point& P)>& Func) const
 	{
-		//результат (квадратурная сумма)
+		//СЂРµР·СѓР»СЊС‚Р°С‚ (РєРІР°РґСЂР°С‚СѓСЂРЅР°СЏ СЃСѓРјРјР°)
 		double Result = 0.0;
-		//начальная точка сегмента
+		//РЅР°С‡Р°Р»СЊРЅР°СЏ С‚РѕС‡РєР° СЃРµРіРјРµРЅС‚Р°
 		double X01,X02;
-		//поиск шагов, измельчающих сетку к концам отрезка
+		//РїРѕРёСЃРє С€Р°РіРѕРІ, РёР·РјРµР»СЊС‡Р°СЋС‰РёС… СЃРµС‚РєСѓ Рє РєРѕРЅС†Р°Рј РѕС‚СЂРµР·РєР°
 		double power = 1, sum1 = 0, sum2 = 0;
 		for (int i = 0; i < Number_Segments/2; i++)
 		{
@@ -66,13 +66,13 @@ namespace Com_Methods
 		}
 		double h1 = (End.x() - Begin.x())/ 2.0 / sum1, 
 			h2 = (End.x() - Begin.x())/ 2.0 / sum2;
-		//сумма по всем сегментам разбиения
+		//СЃСѓРјРјР° РїРѕ РІСЃРµРј СЃРµРіРјРµРЅС‚Р°Рј СЂР°Р·Р±РёРµРЅРёСЏ
 		power = 1;
 		X01 = Begin.x();
 		X02 = (End.x() - Begin.x()) / 2.0;
 		for (int Integ_Point = 0; Integ_Point < Points.size(); Integ_Point++)
 		{
-			//переход с мастер-элемента [-1, 1]
+			//РїРµСЂРµС…РѕРґ СЃ РјР°СЃС‚РµСЂ-СЌР»РµРјРµРЅС‚Р° [-1, 1]
 			auto P1 = Point(X01 + (1 + Points[Integ_Point].x()) * h1 * power / 2.0, 0, 0);
 			auto P2 = Point(X02 + (1 + Points[Integ_Point].x()) * h2 * (1.0 / power) / 2.0, 0, 0);
 			Result += Weight[Integ_Point] * Func(P1)* (h1*power / 2.0);
@@ -80,14 +80,14 @@ namespace Com_Methods
 		}
 		for (int i = 1; i < Number_Segments/2; i++)
 		{
-			//начальная точка сегмента
+			//РЅР°С‡Р°Р»СЊРЅР°СЏ С‚РѕС‡РєР° СЃРµРіРјРµРЅС‚Р°
 			X01 += h1*power;
 			X02 += h2 * (1 / power);
 			power *= r;
-			//сумма по узлам интегрирования
+			//СЃСѓРјРјР° РїРѕ СѓР·Р»Р°Рј РёРЅС‚РµРіСЂРёСЂРѕРІР°РЅРёСЏ
 			for (int Integ_Point = 0; Integ_Point < Points.size(); Integ_Point++)
 			{
-				//переход с мастер-элемента [-1, 1]
+				//РїРµСЂРµС…РѕРґ СЃ РјР°СЃС‚РµСЂ-СЌР»РµРјРµРЅС‚Р° [-1, 1]
 				auto P1 = Point(X01 + (1 + Points[Integ_Point].x()) * h1*power / 2.0, 0, 0);
 				auto P2 = Point(X02 + (1 + Points[Integ_Point].x()) * h2 * (1.0/power) / 2.0, 0, 0);
 				Result += Weight[Integ_Point] * Func(P1) * (h1 * power / 2.0);
@@ -95,7 +95,7 @@ namespace Com_Methods
 			}
 			
 		}
-		//формируем результат с учётом якобиана на отрезке [-1, 1]
+		//С„РѕСЂРјРёСЂСѓРµРј СЂРµР·СѓР»СЊС‚Р°С‚ СЃ СѓС‡С‘С‚РѕРј СЏРєРѕР±РёР°РЅР° РЅР° РѕС‚СЂРµР·РєРµ [-1, 1]
 		return Result;
 	}
 }
