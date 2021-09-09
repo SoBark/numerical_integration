@@ -271,27 +271,27 @@ int main()
 		Writer << std::endl;
 		Writer.close();
 	};
-	NumSegments = 10;
+	NumSegments = 10000;
 	Output4(Gauss1, a, b, 1, NumSegments, PATH + "sinx_nested_Gauss1.txt");
 	Output4(Gauss2, a, b, 3, NumSegments, PATH + "sinx_nested_Gauss2.txt");
 	Output4(Gauss3, a, b, 5, NumSegments, PATH + "sinx_nested_Gauss3.txt");
 	Output4(Simpson, a, b, 3, NumSegments, PATH + "sinx_nested_Simpson.txt");
 	Writer.open(PATH + "xsin_adaptive.txt");
 	I_True = F_xsin(b) - F_xsin(a);
-	Writer << "true=\t" << I_True <<"\t\t|I*-I|\t|I*-I|/I*"<<std::endl;
+	Writer << "I*\tI\t|I*-I|\t|I*-I|/I*"<<std::endl;
 	double r = 1.0;
 	I[0] = Simpson.Calculate_Integral_Adaptive(a, b, NumSegments, r, f_xsin);
-	Writer << "adaptive=\t " << I[0] << "\tr=\t" << r << "\t" << std::abs(I_True-I[0]) << "\t" << std::to_string(std::abs((I_True - I[0])/I_True))<<std::endl;
+	Writer << I_True << "\t " << I[0] << "\t" << r << "\t" << std::abs(I_True-I[0]) << "\t" << (std::abs((I_True - I[0])/I_True))<<std::endl;
 	//коэфициент разрядки
 	r = 1.4;
 	I[0] = Simpson.Calculate_Integral_Adaptive(a, b, NumSegments, r, f_xsin);
-	Writer << "adaptive=\t " << I[0] << "\tr=\t" << r << "\t" << std::abs(I_True - I[0]) << "\t" << std::to_string(std::abs(I_True - I[0]) / I_True)<< std::endl;
+	Writer << I_True << "\t " << I[0] << "\t" << r << "\t" << std::abs(I_True - I[0]) << "\t" << (std::abs((I_True - I[0]) / I_True)) << std::endl;
 	r = 1.5;
 	I[0] = Simpson.Calculate_Integral_Adaptive(a, b, NumSegments, r, f_xsin);
-	Writer << "adaptive=\t " << I[0] << "\tr=\t" << r << "\t" << std::abs(I_True - I[0]) << "\t" << std::to_string(std::abs(I_True - I[0]) / I_True)<< std::endl;
+	Writer << I_True << "\t " << I[0] << "\t" << r << "\t" << std::abs(I_True - I[0]) << "\t" << (std::abs((I_True - I[0]) / I_True)) << std::endl;
 	r = 1.6;
 	I[0] = Simpson.Calculate_Integral_Adaptive(a, b, NumSegments, r, f_xsin);
-	Writer << "adaptive=\t " << I[0] << "\tr=\t" << r << "\t" << std::abs(I_True - I[0]) << "\t" << std::to_string(std::abs(I_True - I[0]) / I_True)<< std::endl;
+	Writer << I_True << "\t " << I[0] << "\t" << r << "\t" << std::abs(I_True - I[0]) << "\t" << (std::abs((I_True - I[0]) / I_True)) << std::endl;
 	Writer.close();
 	return 0;
 }
